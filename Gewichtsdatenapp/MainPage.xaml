@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Gewichtsdatenapp.MainPage"
+             Title="BMI Berechnung">
+    <StackLayout Padding="20" Spacing="15">
+        <Entry x:Name="WeightEntry" Placeholder="Gewicht (kg)" Keyboard="Numeric" />
+        <Entry x:Name="HeightEntry" Placeholder="Größe (m)" Keyboard="Numeric" />
+        <Entry x:Name="AgeEntry" Placeholder="Alter (Jahre)" Keyboard="Numeric" />
+        <Picker x:Name="GenderPicker" Title="Geschlecht">
+            <Picker.ItemsSource>
+                <x:Array Type="{x:Type x:String}">
+                    <x:String>Männlich</x:String>
+                    <x:String>Weiblich</x:String>
+                </x:Array>
+            </Picker.ItemsSource>
+        </Picker>
+        <Button Text="Speichern und BMI berechnen" Clicked="OnSaveButtonClicked" />
+        <Button Text="Daten anzeigen" Clicked="OnShowDataButtonClicked" />
+    </StackLayout>
+</ContentPage>
