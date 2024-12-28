@@ -1,4 +1,4 @@
-﻿using Gewichtsdatenapp.Model;
+using Gewichtsdatenapp.Model;
 using System.Text;
 
 namespace Gewichtsdatenapp
@@ -33,7 +33,7 @@ namespace Gewichtsdatenapp
                     Height = height,
                     Age = age,
                     Gender = gender,
-                    BMI = Math.Round(bmi, 2) // BMI auf 2 Nachkommastellen runden
+                    
                 };
 
 
@@ -44,7 +44,7 @@ namespace Gewichtsdatenapp
                 data.Add(newData);
                 App.StorageService.SaveData(data);
 
-                await DisplayAlert("Erfolg", "$\"Dein BMI ist {newData.BMI} ({category})", "OK");
+                await DisplayAlert("Erfolg", "$\"", "OK");
             }
             catch (Exception ex)
             {
@@ -59,7 +59,7 @@ namespace Gewichtsdatenapp
             var dataString = new StringBuilder();
             foreach (var entry in data)
             {
-                dataString.AppendLine($"Datum: {entry.Date:dd.MM.yyyy}, Gewicht: {entry.Weight} kg, Größe: {entry.Height} m, Alter: {entry.Age}, Geschlecht: {entry.Gender}, BMI: {entry.BMI}");
+                dataString.AppendLine($"Datum: {entry.Date:dd.MM.yyyy}, Gewicht: {entry.Weight} kg, Größe: {entry.Height} m, Alter: {entry.Age}, Geschlecht: {entry.Gender}, BMI: {entry.BMI}, Gewichtsklasse: {entry.Gewichtsklasse}");
             }
 
             await DisplayAlert("Gespeicherte Daten", dataString.ToString(), "OK");
@@ -88,5 +88,7 @@ namespace Gewichtsdatenapp
             return "Unbekannt";
         }
 
+    }
+}
     }
 }
