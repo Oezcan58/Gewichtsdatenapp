@@ -1,14 +1,14 @@
 ﻿using System.Text.Json;
-using Gewichtsdatenapp.Model;
+using Gewichtsdatenapp_LiveChart.Model;
 
 
-namespace Gewichtsdatenapp.Service
+namespace Gewichtsdatenapp_LiveChart.Service
 {
-    public class JsonStorageService
+    public class Speicherplatz
     {
         private readonly string _filePath;
 
-        public JsonStorageService(string filePath)
+        public Speicherplatz(string filePath)
         {
             _filePath = filePath;
         }
@@ -18,14 +18,32 @@ namespace Gewichtsdatenapp.Service
             if (!File.Exists(_filePath))
                 return new List<Werte>();
 
-            string json = File.ReadAllText(_filePath);
-            return JsonSerializer.Deserialize<List<Werte>>(json) ?? new List<Werte>();
+            try
+            {
+                string json = File.ReadAllText(_filePath);
+                var daten = JsonSerializer.Deserialize<List<Werte>>(json);
+                return daten ?? new List<Werte>();
+            }
+            catch (Exception)
+            {
+                return new List<Werte>();
+            }
         }
 
-        public void SaveData(List<Werte> data)
+        public void SaveData(List<Werte> daten)
         {
-            string json = JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
-            File.WriteAllText(_filePath, json);
+            try
+            {
+                string json = JsonSerializer.Serialize(daten, new JsonSerializerOptions
+                {
+                    WriteIndented = true
+                });
+                File.WriteAllText(_filePath, json);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Fehler beim Speichern der Daten: {ex.Message}");
+            }
         }
     }
 }
