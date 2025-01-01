@@ -1,7 +1,8 @@
-using Gewichtsdatenapp.Model;
 using System.Collections.ObjectModel;
+using Gewichtsdatenapp_LiveChart.Model;
+using Gewichtsdatenapp_LiveChart.ViewModel;
 
-namespace Gewichtsdatenapp;
+namespace Gewichtsdatenapp_LiveChart.View;
 
 public partial class WerteSeite : ContentPage
 {
@@ -10,36 +11,12 @@ public partial class WerteSeite : ContentPage
     public WerteSeite()
     {
         InitializeComponent();
-        LoadData();
+        BindingContext = new BaseViewModel();
     }
 
-    private void LoadData()
+    protected override void OnAppearing()
     {
-        // Lade die gespeicherten Daten aus der JSON-Datei
-        var data = App.StorageService.LoadData();
-
-        // Initialisiere die ObservableCollection
-        _werteListe = new ObservableCollection<Werte>(data);
-
-        // Binde die Daten an die CollectionView
-        DataCollectionView.ItemsSource = _werteListe;
-    }
-
-    public void UpdateWerte(Werte neueWerte)
-    {
-        // Werte in der Liste aktualisieren
-        var bestehendeWerte = _werteListe.FirstOrDefault(w => w.Date == neueWerte.Date);
-        if (bestehendeWerte != null)
-        {
-            bestehendeWerte.Weight = neueWerte.Weight;
-            bestehendeWerte.Height = neueWerte.Height;
-        }
-        else
-        {
-            _werteListe.Add(neueWerte);
-        }
-
-        // Speichere die aktualisierten Werte
-        App.StorageService.SaveData(_werteListe.ToList());
+        base.OnAppearing();
+        (BindingContext as BaseViewModel)?.ReloadData(); // Daten neu laden
     }
 }
