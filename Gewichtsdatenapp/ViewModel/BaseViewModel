@@ -1,0 +1,116 @@
+using System.Collections.ObjectModel;
+using System.Text;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using Gewichtsdatenapp_LiveChart.Model;
+
+
+namespace Gewichtsdatenapp_LiveChart.ViewModel
+{
+    public partial class BaseViewModel : ObservableObject
+    {
+        [ObservableProperty]
+        private double weight;
+
+        [ObservableProperty]
+        private double height;
+
+        [ObservableProperty]
+        private int age;
+
+        [ObservableProperty]
+        private string gender = string.Empty;
+
+        // Private Feld für die Collection
+        private ObservableCollection<Werte> _gewichtsdaten;
+
+        // Öffentliche Property
+        public ObservableCollection<Werte> Gewichtsdaten
+        {
+            get => _gewichtsdaten;
+            set => SetProperty(ref _gewichtsdaten, value);
+        }
+
+        public BaseViewModel()
+        {
+            _gewichtsdaten = new ObservableCollection<Werte>(App.Speicherstand.LoadData());
+            Age = 0;
+            Gender = string.Empty;
+        }
+
+        [RelayCommand]
+        public void AddWerte()
+        {
+            if (Weight > 0 && Height > 0 && Age > 0 && !string.IsNullOrEmpty(Gender))
+            {
+                var neueWerte = new Werte
+                {
+                    Weight = Weight,
+                    Height = Height,
+                    Age = Age,
+                    Gender = Gender
+                };
+
+                Gewichtsdaten.Add(neueWerte);
+                SaveData();
+                ReloadData();
+                
+                Weight = 0;
+                Height = 0;
+                Age = 0;
+                Gender = string.Empty;
+
+                
+
+                App.Current.MainPage.DisplayAlert("Gespeicherte Daten", "Gespeichert", "OK");
+            }
+            else
+            {
+                App.Current.MainPage.DisplayAlert("Fehler", "Daten konnten nicht gespeichert werden", "OK");
+            }
+        }
+
+        [RelayCommand]
+        public void ShowData()
+        {
+            ReloadData();
+
+            var Ausgabe = new StringBuilder();
+            foreach (var Eingabe in Gewichtsdaten)
+            {
+                Ausgabe.AppendLine($"Datum: {Eingabe.Date:dd.MM.yyyy}, Gewicht: {Eingabe.Weight} kg, Größe: {Eingabe.Height} m, Alter: {Eingabe.Age}, Geschlecht: {Eingabe.Gender}, BMI: {Eingabe.BMI}, Gewichtsklasse: {Eingabe.Gewichtsklasse}");
+            }
+
+            App.Current.MainPage.DisplayAlert("Gespeicherte Daten", Ausgabe.ToString(), "OK");
+        }
+
+        [RelayCommand]
+        public void DeleteWerte(Werte werte)
+        {
+            if (werte != null)
+            {
+                Gewichtsdaten.Remove(werte);
+                SaveData();
+                
+                App.Current.MainPage.DisplayAlert("Erfolg", "Eintrag wurde gelöscht", "OK");
+                
+            }
+        }
+
+        public void SaveData()
+        {
+            App.Speicherstand.SaveData(Gewichtsdaten.ToList());
+        }
+
+        public void ReloadData()
+        {
+            var updatedData = App.Speicherstand.LoadData();
+            Gewichtsdaten.Clear(); 
+            foreach (var Element in updatedData)
+            {
+                Gewichtsdaten.Add(Element);
+            }
+        }
+       
+    }
+    }
