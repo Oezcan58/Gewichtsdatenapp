@@ -1,6 +1,8 @@
-﻿using System.ComponentModel;
+﻿
+using System.ComponentModel;
 
-namespace Gewichtsdatenapp.Model
+
+namespace Gewichtsdatenapp_LiveChart.Model
 {
     public class Werte : INotifyPropertyChanged
     {
@@ -8,10 +10,13 @@ namespace Gewichtsdatenapp.Model
         private double _height;
         private double _bmi;
         private string _gewichtsklasse;
+        private int _age;           
+        private string _gender;     
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         public DateTime Date { get; set; } = DateTime.Now;
+
 
         public double Weight
         {
@@ -22,7 +27,7 @@ namespace Gewichtsdatenapp.Model
                 {
                     _weight = value;
                     OnPropertyChanged(nameof(Weight));
-                    BerechneBMI(); // Berechnet BMI automatisch
+                    BerechneBMI(); 
                 }
             }
         }
@@ -67,27 +72,151 @@ namespace Gewichtsdatenapp.Model
             }
         }
 
-        public int Age { get; set; } // Alter bleibt unverändert
-        public string Gender { get; set; } // Geschlecht bleibt unverändert
+        public int Age
+        {
+            get => _age;
+            set
+            {
+                if (_age != value)
+                {
+                    _age = value;
+                    OnPropertyChanged(nameof(Age));
+                }
+            }
+        }
+
+        public string Gender
+        {
+            get => _gender;
+            set
+            {
+                if (_gender != value)
+                {
+                    _gender = value;
+                    OnPropertyChanged(nameof(Gender));
+                    BerechneBMI();
+                }
+            }
+        }
 
         private void BerechneBMI()
         {
             if (Height > 0)
             {
                 BMI = Math.Round(Weight / (Height * Height), 2);
-                Gewichtsklasse = BestimmeGewichtsklasse(BMI);
+                Gewichtsklasse = BestimmeGewichtsklasse(BMI, Gender, Age);
             }
         }
 
-        private string BestimmeGewichtsklasse(double bmi)
+        private string BestimmeGewichtsklasse(double bmi, string gender, int Age)
         {
-            if (bmi < 18.5) return "Untergewicht";
-            if (bmi < 24.9) return "Normalgewicht";
-            if (bmi < 29.9) return "Übergewicht";
-            return "Adipositas";
+            if (Age < 18)
+            {
+                return "BMI für Kinder nicht geeignet";
+            }
+            if (string.IsNullOrEmpty(gender))
+            {
+                return "Geschlecht nicht angegeben";
+            }
+            if (gender.ToLower() == "männlich")
+            {
+                if (Age >= 19 && Age <= 24)
+                {
+                    if (bmi < 20) return "Untergewicht";
+                    if (bmi < 25) return "Normalgewicht";
+                    if (bmi < 30) return "Übergewicht";
+                    return "Adipositas";
+                }
+                if (Age >= 25 && Age <= 34)
+                {
+                    if (bmi < 21) return "Untergewicht";
+                    if (bmi < 26) return "Normalgewicht";
+                    if (bmi < 31) return "Übergewicht";
+                    return "Adipositas";
+                }
+                if (Age >= 35 && Age <= 44)
+                {
+                    if (bmi < 22) return "Untergewicht";
+                    if (bmi < 27) return "Normalgewicht";
+                    if (bmi < 32) return "Übergewicht";
+                    return "Adipositas";
+                }
+                if (Age >= 45 && Age <= 54)
+                {
+                    if (bmi < 23) return "Untergewicht";
+                    if (bmi < 28) return "Normalgewicht";
+                    if (bmi < 33) return "Übergewicht";
+                    return "Adipositas";
+                }
+                if (Age >= 55 && Age <= 64)
+                {
+                    if (bmi < 24) return "Untergewicht";
+                    if (bmi < 29) return "Normalgewicht";
+                    if (bmi < 34) return "Übergewicht";
+                    return "Adipositas";
+                }
+                if (Age >= 65)
+                {
+                    if (bmi < 25) return "Untergewicht";
+                    if (bmi < 30) return "Normalgewicht";
+                    if (bmi < 35) return "Übergewicht";
+                    return "Adipositas";
+                }
+            }
+            else if (gender.ToLower() == "weiblich")
+            {
+                // Altersgruppen für Frauen
+                if (Age >= 19 && Age <= 24)
+                {
+                    if (bmi < 19) return "Untergewicht";
+                    if (bmi < 24) return "Normalgewicht";
+                    if (bmi < 29) return "Übergewicht";
+                    return "Adipositas";
+                }
+                if (Age >= 25 && Age <= 34)
+                {
+                    if (bmi < 20) return "Untergewicht";
+                    if (bmi < 25) return "Normalgewicht";
+                    if (bmi < 30) return "Übergewicht";
+                    return "Adipositas";
+                }
+                if (Age >= 35 && Age <= 44)
+                {
+                    if (bmi < 21) return "Untergewicht";
+                    if (bmi < 26) return "Normalgewicht";
+                    if (bmi < 31) return "Übergewicht";
+                    return "Adipositas";
+                }
+                if (Age >= 45 && Age <= 54)
+                {
+                    if (bmi < 22) return "Untergewicht";
+                    if (bmi < 27) return "Normalgewicht";
+                    if (bmi < 32) return "Übergewicht";
+                    return "Adipositas";
+                }
+                if (Age >= 55 && Age <= 64)
+                {
+                    if (bmi < 23) return "Untergewicht";
+                    if (bmi < 28) return "Normalgewicht";
+                    if (bmi < 33) return "Übergewicht";
+                    return "Adipositas";
+                }
+                if (Age >= 65)
+                {
+                    if (bmi < 24) return "Untergewicht";
+                    if (bmi < 29) return "Normalgewicht";
+                    if (bmi < 34) return "Übergewicht";
+                    return "Adipositas";
+                }
+            }
+
+            return "nicht bestimmbar";
         }
+
 
         protected void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+    }
+}
