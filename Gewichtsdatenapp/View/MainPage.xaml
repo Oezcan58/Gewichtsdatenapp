@@ -1,21 +1,42 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="Gewichtsdatenapp.MainPage"
-             Title="BMI Berechnung">
-    <StackLayout Padding="20" Spacing="15">
-        <Entry x:Name="WeightEntry" Placeholder="Gewicht (kg)" Keyboard="Numeric" />
-        <Entry x:Name="HeightEntry" Placeholder="Größe (m)" Keyboard="Numeric" />
-        <Entry x:Name="AgeEntry" Placeholder="Alter (Jahre)" Keyboard="Numeric" />
-        <Picker x:Name="GenderPicker" Title="Geschlecht">
-            <Picker.ItemsSource>
-                <x:Array Type="{x:Type x:String}">
+             xmlns:vm="clr-namespace:Gewichtsdatenapp_LiveChart.ViewModel"
+             x:Class="Gewichtsdatenapp_LiveChart.View.MainPage"
+    Title="BMI Berechnung">
+    <ContentPage.BindingContext>
+        <vm:BaseViewModel />
+    </ContentPage.BindingContext>
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="15">
+            <Entry Text="{Binding Weight, Mode=TwoWay}" 
+                   Placeholder="Gewicht (kg)" 
+                   Keyboard="Numeric" />
+
+            <Entry Text="{Binding Height, Mode=TwoWay}" 
+                   Placeholder="Größe (m)" 
+                   Keyboard="Numeric" />
+
+            <Entry Text="{Binding Age, Mode=TwoWay}" 
+                   Placeholder="Alter (Jahre)" 
+                   Keyboard="Numeric" />
+
+            <Picker SelectedItem="{Binding Gender, Mode=TwoWay}" 
+                    Title="Geschlecht auswählen">
+                <Picker.Items>
                     <x:String>Männlich</x:String>
                     <x:String>Weiblich</x:String>
-                </x:Array>
-            </Picker.ItemsSource>
-        </Picker>
-        <Button Text="Speichern und BMI berechnen" Clicked="OnSaveButtonClicked" />
-        <Button Text="Daten anzeigen" Clicked="OnShowDataButtonClicked" />
-    </StackLayout>
+                </Picker.Items>
+            </Picker>
+
+            <Button Text="Speichern und BMI berechnen" 
+                    Command="{Binding AddWerteCommand}"
+                    BackgroundColor="green" />
+
+            <Button Text="Daten anzeigen" 
+                    Command="{Binding ShowDataCommand}"
+                    BackgroundColor="blue" />
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>
