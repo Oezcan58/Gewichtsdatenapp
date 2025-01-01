@@ -41,7 +41,7 @@ namespace Gewichtsdatenapp_LiveChart.Model
                 {
                     _height = value;
                     OnPropertyChanged(nameof(Height));
-                    BerechneBMI(); // Berechnet BMI automatisch
+                    BerechneBMI(); 
                 }
             }
         }
